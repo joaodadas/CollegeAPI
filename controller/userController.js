@@ -1,50 +1,50 @@
-const userService = require("../application/userService");
+const relatorioService = require("../application/relatorioService");
 
-class UserController {
-  async createUser(req, res) {
+class RelatorioController {
+  async createRelatorio(req, res) {
     try {
-      const user = await userService.createUser(req.body);
-      res.status(201).json(user);
+      const relatorio = await relatorioService.createRelatorio(req.body);
+      res.status(201).json(relatorio);
     } catch (err) {
-      res.status(500).json({ message: "Error creating user", error: err });
+      res.status(500).json({ message: "Error creating relatorio", error: err });
     }
   }
 
-  async getUserById(req, res) {
+  async getRelatorioById(req, res) {
     try {
-      const user = await userService.getUserById(req.params.id);
-      res.status(200).json(user);
+      const relatorio = await relatorioService.getRelatorioById(req.params.id);
+      res.status(200).json(relatorio);
     } catch (err) {
-      res.status(404).json({ message: "User not found", error: err });
+      res.status(404).json({ message: "Relatorio not found", error: err });
     }
   }
 
-  async getAllUsers(req, res) {
+  async getAllRelatorios(req, res) {
     try {
-      const users = await userService.getAllUsers();
-      res.status(200).json(users);
+      const relatorios = await relatorioService.getAllRelatorios();
+      res.status(200).json(relatorios);
     } catch (err) {
-      res.status(500).json({ message: "Error fetching users", error: err });
+      res.status(500).json({ message: "Error fetching relatorios", error: err });
     }
   }
 
-  async updateUser(req, res) {
+  async updateRelatorio(req, res) {
     try {
-      const user = await userService.updateUser(req.params.id, req.body);
-      res.status(200).json(user);
+      const relatorio = await relatorioService.updateRelatorio(req.params.id, req.body);
+      res.status(200).json(relatorio);
     } catch (err) {
-      res.status(500).json({ message: "Error updating user", error: err });
+      res.status(500).json({ message: "Error updating relatorio", error: err });
     }
   }
 
-  async deleteUser(req, res) {
+  async deleteRelatorio(req, res) {
     try {
-      await userService.deleteUser(req.params.id);
+      await relatorioService.deleteRelatorio(req.params.id);
       res.status(204).json();
     } catch (err) {
-      res.status(500).json({ message: "Error deleting user", error: err });
+      res.status(500).json({ message: "Error deleting relatorio", error: err });
     }
   }
 }
 
-module.exports = new UserController();
+module.exports = new RelatorioController();
