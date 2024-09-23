@@ -1,38 +1,55 @@
+const mongoose = require("mongoose");
+
+const configuracaoSchema = new mongoose.Schema({
+  temaInterface: { type: String, default: null },
+  unidadeMedidaDistancia: { type: String, default: null },
+});
+
+const Configuracao = mongoose.model("Configuracao", configuracaoSchema);
+
 class ConfiguracaoSingleton {
-    constructor() {
-      if (ConfiguracaoSingleton.instance) {
-        return ConfiguracaoSingleton.instance;
-      }
-  
-      this.temaInterface = null;
-      this.unidadeMedidaDistancia = null;
-  
-      ConfiguracaoSingleton.instance = this;
-    }
-  
-    static getInstance() {
-      if (!ConfiguracaoSingleton.instance) {
-        ConfiguracaoSingleton.instance = new ConfiguracaoSingleton();
-      }
+  constructor() {
+    if (ConfiguracaoSingleton.instance) {
       return ConfiguracaoSingleton.instance;
     }
-  
-    getTemaInterface() {
-      return this.temaInterface;
+
+    this.configuracao = null;
+    ConfiguracaoSingleton.instance = this;
+  }
+
+  static async getInstance() {
+    if (!ConfiguracaoSingleton.instance) {
+      ConfiguracaoSingleton.instance = new ConfiguracaoSingleton();
+      await ConfiguracaoSingleton.instance.loadConfiguracao();
     }
-  
-    setTemaInterface(temaInterface) {
-      this.temaInterface = temaInterface;
-    }
-  
-    getUnidadeMedidaDistancia() {
-      return this.unidadeMedidaDistancia;
-    }
-  
-    setUnidadeMedidaDistancia(unidadeMedidaDistancia) {
-      this.unidadeMedidaDistancia = unidadeMedidaDistancia;
+    return ConfiguracaoSingleton.instance;
+  }
+
+  async loadConfiguracao() {
+    this.configuracao = await Configuracao.findOne();
+    if (!this.configuracao) {
+      this.configuracao = new Configuracao();
+      await this.configuracao.save();
     }
   }
-  
-  module.exports = ConfiguracaoSingleton;
-  
+
+  getTemaInterface() {
+    return this.configuracao.temaInterface;
+  }
+
+  setTemaInterface(temaInterface) {
+    this.configuracao.temaInterface = temaInterface;
+    this.configuracao.save(); 
+  }
+
+  getUnidadeMedidaDistancia() {
+    return this.configuracao.unidadeMedidaDistancia;
+  }
+
+  setUnidadeMedidaDistancia(unidadeMedidaDistancia) {
+    this.configuracao.unidadeMedidaDistancia = unidadeMedidaDistancia;
+    this.configuracao.save(); 
+  }
+}
+
+module.exports = ConfiguracaoSingleton;

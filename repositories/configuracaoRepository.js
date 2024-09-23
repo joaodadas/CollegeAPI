@@ -1,22 +1,23 @@
-const ConfiguracaoSingleton = require("../models/configuracaoModel");
+const ConfiguracaoModel = require("./ConfiguracaoModel"); 
 
 class ConfiguracaoRepository {
-  constructor() {
-    this.configuracao = ConfiguracaoSingleton.getInstance();
+  async getConfiguracao() {
+    return await ConfiguracaoModel.findOne().exec();
   }
 
-  getConfiguracao() {
-    return this.configuracao;
+  async setTemaInterface(temaInterface) {
+    if (typeof temaInterface !== 'string') {
+      throw new Error("Tema interface must be a string.");
+    }
+    await ConfiguracaoModel.updateOne({}, { temaInterface }, { upsert: true });
   }
 
-  updateTemaInterface(temaInterface) {
-    this.configuracao.setTemaInterface(temaInterface);
-    return this.configuracao.getTemaInterface();
-  }
-
-  updateUnidadeMedidaDistancia(unidadeMedidaDistancia) {
-    this.configuracao.setUnidadeMedidaDistancia(unidadeMedidaDistancia);
-    return this.configuracao.getUnidadeMedidaDistancia();
+  async setUnidadeMedidaDistancia(unidadeMedidaDistancia) {
+    const validUnits = ['km', 'miles'];
+    if (!validUnits.includes(unidadeMedidaDistancia)) {
+      throw new Error(`Unidade de medida inválida. Deve ser uma das seguintes: ${validUnits.join(', ')}`);
+    }
+    await ConfiguracaoModel.updateOne({}, { unidadeMedidaDistancia }, { upsert: true });
   }
 }
 
