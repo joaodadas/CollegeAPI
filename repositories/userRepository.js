@@ -1,26 +1,50 @@
-const User = require("../models/userModel");
-
 class UserRepository {
+  constructor(userModel) {
+    this.userModel = userModel; // Dependency Injection
+  }
+
   async create(userData) {
-    const user = new User(userData);
-    return await user.save();
+    try {
+      const user = new this.userModel(userData);
+      return await user.save();
+    } catch (error) {
+      throw new Error("Error creating user: " + error.message);
+    }
   }
 
   async getById(id) {
-    return await User.findById(id);
+    try {
+      return await this.userModel.findById(id);
+    } catch (error) {
+      throw new Error("Error fetching user by ID: " + error.message);
+    }
   }
 
   async getAll() {
-    return await User.find();
+    try {
+      return await this.userModel.find();
+    } catch (error) {
+      throw new Error("Error fetching users: " + error.message);
+    }
   }
 
   async update(id, updateData) {
-    return await User.findByIdAndUpdate(id, updateData, { new: true });
+    try {
+      return await this.userModel.findByIdAndUpdate(id, updateData, {
+        new: true,
+      });
+    } catch (error) {
+      throw new Error("Error updating user: " + error.message);
+    }
   }
 
   async delete(id) {
-    return await User.findByIdAndDelete(id);
+    try {
+      return await this.userModel.findByIdAndDelete(id);
+    } catch (error) {
+      throw new Error("Error deleting user: " + error.message);
+    }
   }
 }
 
-module.exports = new UserRepository();
+module.exports = (userModel) => new UserRepository(userModel);
